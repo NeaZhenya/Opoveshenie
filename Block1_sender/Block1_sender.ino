@@ -6,9 +6,6 @@
 #define rst 9
 #define dio0 2
 
-int counter = 0;
-int button_state = 0;
-
 void setup() {
   //запускаем монитор порта
   Serial.begin(9600);

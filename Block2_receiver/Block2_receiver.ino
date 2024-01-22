@@ -31,7 +31,6 @@ void loop() {
   bool stat = 0;
   while (packetSize && stat == 0) {
     int datchik = analogRead(A0);
-    Serial.println(datchik);
     Serial.println(packetSize);
     Serial.print("' with RSSI ");
     Serial.println(LoRa.packetRssi());
