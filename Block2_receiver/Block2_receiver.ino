@@ -6,6 +6,10 @@
 #define rst 9
 #define dio0 2
 
+int schet = 0;
+
+String LoRaDataPast = " ";
+
 void setup() {
   //запускаем монитор порта
   Serial.begin(9600);
@@ -27,26 +31,41 @@ void setup() {
 
 void loop() {
   int packetSize = LoRa.parsePacket();
+  Serial.print("packetSize:");
+  Serial.println(packetSize);
+  if (packetSize == 0)
+  {
+    schet++;
+  }
+  if (packetSize > 2)
+  {
+    Serial.println(schet);
+    schet = 0;
+  }
+  if (schet > 15)
+  {
+    tone (8, 600); // включаем на пьезодинамик 600 Гц
+    delay(500);
+    noTone(8);
+  }
+  if (schet < 15)
+  {
+    noTone(8);
+  }
   int datchik = analogRead(A0);
   bool stat = 0;
-  while (packetSize && stat == 0) {
-    int datchik = analogRead(A0);
-    Serial.println(packetSize);
-    Serial.print("' with RSSI ");
-    Serial.println(LoRa.packetRssi());
+  String LoRaDataPresent = LoRa.readString();
+  delay(300);
+  char poezd = LoRaDataPresent[0];
+  while (poezd == '1' && stat == 0) {
+    datchik = analogRead(A0);
+    if (datchik < 40) {
+      stat = 1;
+    }
     tone (8, 600); // включаем на пьезодинамик 600 Гц
-    if (datchik < 40) {
-      stat = 1;
-    }
-    delay(1000); // ждем 1 секунду
-    tone(8, 900); // включаем на пьезодинамик 900 Гц
-    if (datchik < 40) {
-      stat = 1;
-    }
-    delay(1000); // ждем 1 секунду
-    noTone(8); // отключаем пьезодинамик на пин 11
-    if (datchik < 40) {
-      stat = 1;
-    }
+    delay(300);
+    tone (8, 900);
+    delay(300);
+    noTone(8);
   }
 }

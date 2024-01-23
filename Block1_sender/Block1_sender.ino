@@ -6,6 +6,8 @@
 #define rst 9
 #define dio0 2
 
+int counter = 0;
+
 void setup() {
   //запускаем монитор порта
   Serial.begin(9600);
@@ -31,12 +33,27 @@ void loop() {
   bool poezd = 0;
   int hall = analogRead(A0);
   Serial.println(hall);
-  delay (500);
+
   if (hall < 40)
   {
-    Serial.println("poezd");
+    poezd = 1;
     LoRa.beginPacket();
-    LoRa.print("poezd");
+    LoRa.print(poezd);
+    LoRa.print(" ");
+    LoRa.print(counter);
     LoRa.endPacket();
-  }
+    Serial.println();
+  }else 
+   {
+    poezd =0;
+    LoRa.beginPacket();
+    LoRa.print(poezd);
+    LoRa.print(" ");
+    LoRa.print(counter);
+    LoRa.endPacket();
+   }
+   counter++;
+   if(counter>1000)
+     counter = 0;
+   delay(500);
 }
